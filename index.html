@@ -104,6 +104,10 @@ margin:15px auto;
 
 <div id="freeArea"></div>
 
+<button onclick="resetAll()" class="resetBtn">
+リセット
+</button>
+
 </div>
 
 <script>
@@ -278,6 +282,20 @@ document.getElementById("totalSale").innerHTML =
 
 document.getElementById("totalGram").innerHTML =
 `${totalGram.toFixed(1)}g`;
+
+}
+
+function resetAll(){
+
+  if(!confirm("本当にすべての入力をリセットしますか？")){
+    return;
+  }
+
+  document.querySelectorAll("input").forEach(input=>{
+    input.value="";
+  });
+
+  calc();
 
 }
 
