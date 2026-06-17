@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>売上計算機</title>
+
+<style>
+body{
+font-family:sans-serif;
+background:#f5f5f5;
+margin:0;
+padding:15px;
+}
+
+.card{
+background:white;
+border-radius:20px;
+padding:20px;
+box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+h1{
+text-align:center;
+margin-bottom:10px;
+}
+
+.summary{
+text-align:center;
+margin-bottom:20px;
+}
+
+.summary .big{
+font-size:42px;
+font-weight:bold;
+}
+
+.row{
+border-bottom:1px solid #ddd;
+padding:15px 0;
+}
+
+.name{
+font-size:26px;
+font-weight:bold;
+margin-bottom:8px;
+}
+
+.price{
+font-size:22px;
+margin-bottom:10px;
+}
+
+input{
+font-size:20px;
+padding:8px;
+border:1px solid #ccc;
+border-radius:8px;
+}
+
+.g{
+width:120px;
+}
+
+.amount{
+font-size:28px;
+font-weight:bold;
+margin-top:10px;
+}
+
+.freebox{
+border-bottom:1px solid #ddd;
+padding:15px 0;
+}
+
+.freebox input{
+width:28%;
+margin-right:2%;
+}
+
+.totalline{
+height:3px;
+background:#cfcfcf;
+margin:15px auto;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>売上計算機</h1>
+
+<div class="summary">
+<div>総グラム</div>
+<div class="big" id="totalGram">0g</div>
+
+<div style="margin-top:15px;">総売上</div>
+<div class="big" id="totalSale">0円</div>
+</div>
+
+<div class="totalline"></div>
+
+<div id="list"></div>
+
+<h2 style="margin-top:25px;">自由入力</h2>
+
+<div id="freeArea"></div>
+
+</div>
+
+<script>
+
+const items = [
+
+["K24IN",24438],
+["K24",23980],
+["K22",21930],
+["K21.6",21458],
+["K20",19893],
+["K18",18304],
+["K14",13719],
+["K10",9628],
+["K9",8511],
+
+["K18WG",18318],
+["K14WG",13733],
+
+["PT1000IN",10048],
+["PT1000",9880],
+["PT950",9427],
+["PT900",9584],
+["PT900ダイヤ",9734],
+["PT850",9082],
+["PT850ダイヤ",9232],
+
+["SV1000",361],
+["SV925",322],
+
+["900/18 9:1",17256],
+["900/18 8:2",16302],
+["900/18 7:3",15376],
+["900/18 6:4",14450],
+["900/18 5:5",13565],
+["900/18 4:6",12597],
+["900/18 3:7",11671],
+["900/18 2:8",10745],
+["900/18 1:9",9865],
+
+["850/18 9:1",17236],
+["850/18 8:2",16201],
+["850/18 7:3",15225],
+["850/18 6:4",14249],
+["850/18 5:5",13314],
+["850/18 4:6",12296],
+["850/18 3:7",11320],
+["850/18 2:8",10344],
+["850/18 1:9",9413]
+
+];
+
+const list = document.getElementById("list");
+
+items.forEach((item,i)=>{
+
+list.innerHTML += `
+<div class="row">
+
+<div class="name">${item[0]}</div>
+
+<div class="price">
+${item[1].toLocaleString()}円
+</div>
+
+<input
+class="g"
+type="number"
+step="0.1"
+placeholder="g"
+id="g${i}"
+oninput="calc()">
+
+<div class="amount" id="a${i}">
+売上 0円
+</div>
+
+</div>
+`;
+
+});
+
+const freeArea = document.getElementById("freeArea");
+
+for(let i=0;i<5;i++){
+
+freeArea.innerHTML += `
+
+<div class="freebox">
+
+<input
+type="text"
+placeholder="金種"
+id="fname${i}">
+
+<input
+type="number"
+placeholder="単価"
+id="fprice${i}"
+oninput="calc()">
+
+<input
+type="number"
+placeholder="g"
+id="fgram${i}"
+oninput="calc()">
+
+<div
+class="amount"
+id="fa${i}">
+売上 0円
+</div>
+
+</div>
+
+`;
+
+}
+
+function calc(){
+
+let totalSale = 0;
+let totalGram = 0;
+
+items.forEach((item,i)=>{
+
+const g =
+parseFloat(
+document.getElementById(`g${i}`).value
+) || 0;
+
+const sale =
+Math.round(item[1] * g);
+
+document.getElementById(`a${i}`).innerHTML =
+`売上 ${sale.toLocaleString()}円`;
+
+totalSale += sale;
+totalGram += g;
+
+});
+
+for(let i=0;i<5;i++){
+
+const price =
+parseFloat(
+document.getElementById(`fprice${i}`).value
+) || 0;
+
+const gram =
+parseFloat(
+document.getElementById(`fgram${i}`).value
+) || 0;
+
+const sale =
+Math.round(price * gram);
+
+document.getElementById(`fa${i}`).innerHTML =
+`売上 ${sale.toLocaleString()}円`;
+
+totalSale += sale;
+totalGram += gram;
+
+}
+
+document.getElementById("totalSale").innerHTML =
+`${totalSale.toLocaleString()}円`;
+
+document.getElementById("totalGram").innerHTML =
+`${totalGram.toFixed(1)}g`;
+
+}
+
+</script>
+
+</body>
+</html>
